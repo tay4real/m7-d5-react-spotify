@@ -55,12 +55,12 @@ class SideBar extends React.Component {
                 />
               </span>
             </Link>
-            <a className="pl-4 mb-2" href="artist.html">
+            <Link className="pl-4 mb-2" to="/favorites">
               <span className="spotify-text-primary d-flex flex-row pt-1">
                 <i className="fas fa-swatchbook mr-3"></i>
-                <h6>Your Library</h6>
+                <h6>Your Likes</h6>
               </span>
-            </a>
+            </Link>
           </div>
           <div className="myLibrary border-top border-secondary ml-4">
             <ul className="pl-0"></ul>
@@ -98,12 +98,12 @@ class SideBar extends React.Component {
               <h6>Search</h6>
             </div>
           </a>
-          <a className="pl-4 mb-2" href="artist.html">
+          <Link className="pl-4 mb-2" to="/favorites">
             <div className="spotify-text-primary d-flex align-items-center justify-content-center flex-column pt-1">
               <i className="fas fa-swatchbook fa-2x mt-3 mb-1"></i>
-              <h6>Your Library</h6>
+              <h6>Your Likes</h6>
             </div>
-          </a>
+          </Link>
         </div>
       </>
     );

@@ -8,6 +8,7 @@ import PlayBar from "./components/PlayBar";
 import { Row } from "react-bootstrap";
 import ArtistDetails from "./components/ArtistDetails";
 import AlbumDetails from "./components/AlbumDetails";
+import Likes from "./components/Likes"
 
 class App extends React.Component {
   state = {
@@ -53,6 +54,7 @@ class App extends React.Component {
                 />
               )}
             />
+            <Route path= "/favorites" exact component = {Likes}/>
             <Route
               path="/albumDetails/:id"
               exact
