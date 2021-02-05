@@ -9,9 +9,13 @@ import { Row } from "react-bootstrap";
 import ArtistDetails from "./components/ArtistDetails";
 import AlbumDetails from "./components/AlbumDetails";
 
+import Signup from "./components/Signup";
 import Login from "./components/Login";
 
 import Likes from "./components/Likes";
+import { connect } from "react-redux";
+
+const mapStateToProps = (state) => state;
 
 class App extends React.Component {
   state = {
@@ -28,17 +32,20 @@ class App extends React.Component {
     return (
       <div className="App">
         <Router>
-          {!this.state.loggedin ? (
-            <Route
-              path="/"
-              exact
-              render={(props) => (
-                <Login
-                  {...props}
-                  loggedin={() => this.setState({ loggedin: true })}
-                />
-              )}
-            />
+          {!this.props.user.loggedin ? (
+            <>
+              <Route
+                path="/"
+                exact
+                render={(props) => (
+                  <Login
+                    {...props}
+                    loggedin={() => this.setState({ loggedin: true })}
+                  />
+                )}
+              />
+              <Route path="/signup" exact component={Signup} />
+            </>
           ) : (
             <>
               <Row>
@@ -78,4 +85,4 @@ class App extends React.Component {
   }
 }
 
-export default App;
+export default connect(mapStateToProps)(App);
