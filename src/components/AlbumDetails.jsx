@@ -191,7 +191,7 @@ class AlbumDetails extends React.Component {
                         </td>
                         <td>
                           {this.props.likes.find(
-                            (song) => song.id === tracks.id
+                            (song) => song.tracks.id === tracks.id
                           ) ? (
                             <i
                               className="fas fa-heart"
@@ -200,7 +200,13 @@ class AlbumDetails extends React.Component {
                           ) : (
                             <i
                               className="far fa-heart"
-                              onClick={() => this.props.addLike(tracks)}
+                              onClick={() =>
+                                this.props.addLike({
+                                  id: tracks.id,
+                                  tracks: tracks,
+                                  cover: album.cover_xl,
+                                })
+                              }
                             ></i>
                           )}
                         </td>
