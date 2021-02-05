@@ -8,7 +8,11 @@ import PlayBar from "./components/PlayBar";
 import { Row } from "react-bootstrap";
 import ArtistDetails from "./components/ArtistDetails";
 import AlbumDetails from "./components/AlbumDetails";
+
+import Login from "./components/Login";
+
 import Likes from "./components/Likes";
+
 
 class App extends React.Component {
   state = {
@@ -18,37 +22,83 @@ class App extends React.Component {
     //   songName: null,
     // },
     searchString: "",
+    loggedin: false,
   };
 
   render() {
     return (
       <div className="App">
         <Router>
-          <Row>
-            <SideBar
-              searchString={(string) => this.setState({ searchString: string })}
-              searchStr={this.state.searchString}
-            />
+          {!this.state.loggedin ? (
             <Route
               path="/"
               exact
               render={(props) => (
-                <Home {...props} searchString={this.state.searchString} />
+
+                <Login
+                  {...props}
+                  loggedin={() => this.setState({ loggedin: true })}
+                />
               )}
             />
-            <Route
-              path="/artistDetails/:id"
-              exact
-              render={(props) => <ArtistDetails {...props} />}
-            />
-            <Route path="/favorites" exact component={Likes} />
-            <Route
-              path="/albumDetails/:id"
-              exact
-              render={(props) => <AlbumDetails {...props} />}
-            />
-          </Row>
-          <PlayBar />
+          ) : (
+            <>
+              <Row>
+                <SideBar
+                  searchString={(string) =>
+                    this.setState({ searchString: string })
+                  }
+                  searchStr={this.state.searchString}
+                />
+
+                <Route
+                  path="/home"
+                  exact
+                  render={(props) => (
+                    <Home {...props} searchString={this.state.searchString} />
+                  )}
+                />
+                <Route
+                  path="/artistDetails/:id"
+                  exact
+                  render={(props) => (
+                    <ArtistDetails
+                      {...props}
+                      currentSong={(currCover, currArtist, currSong) => {
+                        this.setState({
+                          currentSong: {
+                            albumCover: currCover,
+                            artistName: currArtist,
+                            songName: currSong,
+                          },
+                        });
+                      }}
+                    />
+                  )}
+                />
+                <Route
+                  path="/albumDetails/:id"
+                  exact
+                  render={(props) => (
+                    <AlbumDetails
+                      {...props}
+                      currentSong={(currCover, currArtist, currSong) => {
+                        this.setState({
+                          currentSong: {
+                            albumCover: currCover,
+                            artistName: currArtist,
+                            songName: currSong,
+                          },
+                        });
+                      }}
+                    />
+                  )}
+                />
+              </Row>
+              <PlayBar currentSong={this.state.currentSong} />
+            </>
+          )}
+
         </Router>
       </div>
     );
