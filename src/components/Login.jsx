@@ -1,12 +1,24 @@
 import React from "react";
 import { Container, Form, Button } from "react-bootstrap";
 import logo from "./assetss/Spotify-Logo-Black.png";
+import { connect } from "react-redux";
+import { Link } from "react-router-dom";
 
+const mapStateToProps = (state) => state;
+
+const mapDispatchToProps = (dispatch) => ({
+  setUserName: (username) =>
+    dispatch({ type: "SET_USER_NAME", payload: username }),
+  setPassword: (password) =>
+    dispatch({ type: "SET_PASSWORD", payload: password }),
+  setLoggedIn: (loggedIn) => dispatch({ type: "SET_LOGIN", payload: loggedIn }),
+});
 class Login extends React.Component {
   state = {
     username: "",
     password: "",
   };
+
   render() {
     return (
       <div style={{ backgroundColor: "#fff" }}>
@@ -25,9 +37,11 @@ class Login extends React.Component {
               <div className="col col-md-6 m-auto">
                 <button
                   type="button"
-                  className="btn btn-primary  rounded-pill w-100"
+                  className="btn text-white   rounded-pill w-100"
+                  style={{ backgroundColor: "#3b5998" }}
                 >
-                  <i className="fab fa-facebook"></i>CONTINUE WITH FACEBOOK
+                  <i className="fab fa-facebook ml-2"></i> CONTINUE WITH
+                  FACEBOOK
                 </button>
               </div>
             </div>
@@ -36,9 +50,11 @@ class Login extends React.Component {
               <div className="col col-md-6 m-auto">
                 <button
                   type="button"
-                  className="btn btn-outline-secondary rounded-pill w-100"
+                  className="btn text-white  rounded-pill w-100"
+                  style={{ backgroundColor: "#000" }}
                 >
-                  <i className="fab fa-apple"></i>CONTINUE WITH APPLE
+                  <i className="fab fa-apple ml-2"></i> {"   "} CONTINUE WITH
+                  APPLE
                 </button>
               </div>
             </div>
@@ -49,7 +65,7 @@ class Login extends React.Component {
                   type="button"
                   class="btn btn-outline-secondary rounded-pill w-100"
                 >
-                  <i class="fab fa-google"></i>CONTINUE WITH GOOGLE
+                  <i class="fab fa-google ml-"></i> CONTINUE WITH GOOGLE
                 </button>
               </div>
             </div>
@@ -67,7 +83,7 @@ class Login extends React.Component {
                   id="username"
                   name="username"
                   onChange={(e) =>
-                    this.setState({ location: e.currentTarget.value }, () => {
+                    this.setState({ username: e.currentTarget.value }, () => {
                       console.log(this.state);
                     })
                   }
@@ -79,12 +95,12 @@ class Login extends React.Component {
               <div className="col col-md-6 m-auto ">
                 <Form.Label>Password</Form.Label>
                 <Form.Control
-                  type="text"
+                  type="password"
                   placeholder="Password"
                   id="password"
                   name="password"
                   onChange={(e) =>
-                    this.setState({ location: e.currentTarget.value }, () => {
+                    this.setState({ password: e.currentTarget.value }, () => {
                       console.log(this.state);
                     })
                   }
@@ -109,9 +125,12 @@ class Login extends React.Component {
               <div className="col col-md-3">
                 <button
                   type="button"
-                  className="btn loginButton bg-primary w-100 rounded-pill mb-5"
+                  className="btn loginButton text-white  w-100 rounded-pill mb-5"
+                  style={{ backgroundColor: "#15883e" }}
                   onClick={() => {
-                    this.props.loggedin();
+                    this.props.setUserName(this.state.username);
+                    this.props.setPassword(this.state.password);
+                    this.props.setLoggedIn(true);
                     this.props.history.push("/home");
                   }}
                 >
@@ -124,7 +143,9 @@ class Login extends React.Component {
 
           <div className="row">
             <div className="col col-md-6 m-auto">
-              <h6 className="text-center">Don't have an account?</h6>
+              <Link to="/signup">
+                <h6 className="text-center">Don't have an account?</h6>
+              </Link>
             </div>
           </div>
 
@@ -144,4 +165,4 @@ class Login extends React.Component {
   }
 }
 
-export default Login;
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

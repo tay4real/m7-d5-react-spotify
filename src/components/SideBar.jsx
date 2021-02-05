@@ -2,6 +2,14 @@ import React from "react";
 import logo from "./assetss/spologo.png";
 import { Link, withRouter } from "react-router-dom";
 import { Col, InputGroup, FormControl } from "react-bootstrap";
+import { connect } from "react-redux";
+
+const mapStateToProps = (state) => state;
+
+const mapDispatchToProps = (dispatch) => ({
+  setLoggedOut: (loggedOut) =>
+    dispatch({ type: "SET_LOGOUT", payload: loggedOut }),
+});
 
 class SideBar extends React.Component {
   state = {
@@ -66,13 +74,14 @@ class SideBar extends React.Component {
           <div className="myLibrary border-top border-secondary ml-4">
             <ul className="pl-0"></ul>
           </div>
-          <div className="mb-3 px-4">
+          <div className="mb-5 px-4 ">
             <a className="spotify-text-primary" href="#">
               <span className="d-flex flex-row border-bottom border-secondary mr-4 pb-2">
                 <i className="far fa-arrow-alt-circle-down fa-2x mr-3"></i>
                 <h6 className="pt-1">Install App</h6>
               </span>
             </a>
+
             <span className="d-flex flex-row">
               <img
                 className="rounded-circle mt-2"
@@ -80,9 +89,21 @@ class SideBar extends React.Component {
                 width="35px"
                 height="35px"
               />
-              <h6 className="ml-3 pt-3 spotify-text-secondary">
-                Strive Student
+              <h6 className="ml-2 mr-2 pt-3 spotify-text-secondary">
+                {this.props.user.username}
               </h6>
+              <span className="pt-2">
+                <button
+                  class="btn login-btn btn-danger m-0"
+                  type="button"
+                  onClick={() => {
+                    this.props.setLoggedOut(false);
+                    this.props.history.push("/");
+                  }}
+                >
+                  Logout
+                </button>
+              </span>
             </span>
           </div>
         </Col>
@@ -111,4 +132,6 @@ class SideBar extends React.Component {
   }
 }
 
-export default withRouter(SideBar);
+export default withRouter(
+  connect(mapStateToProps, mapDispatchToProps)(SideBar)
+);

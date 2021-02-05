@@ -30,6 +30,7 @@ const initialState = {
     username: "",
     password: "",
     email: "",
+    loggedin: false,
   },
 };
 
