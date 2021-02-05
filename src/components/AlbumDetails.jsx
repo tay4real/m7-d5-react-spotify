@@ -51,6 +51,12 @@ const mapDispatchToProps = (dispatch) => ({
       payload: song,
     });
   },
+  currentSong: (song) => {
+    dispatch({
+      type: "GET_SONG",
+      payload: song,
+    });
+  },
 });
 
 class AlbumDetails extends React.Component {
@@ -181,11 +187,11 @@ class AlbumDetails extends React.Component {
                           <i
                             className="fas fa-play"
                             onClick={() =>
-                              this.props.currentSong(
-                                album.cover_medium,
-                                album.artist.name,
-                                tracks.title
-                              )
+                              this.props.currentSong({
+                                albumCover: album.cover_medium,
+                                artistName: album.artist.name,
+                                songName: tracks.title,
+                              })
                             }
                           ></i>
                         </td>

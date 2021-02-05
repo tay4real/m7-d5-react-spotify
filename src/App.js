@@ -8,15 +8,15 @@ import PlayBar from "./components/PlayBar";
 import { Row } from "react-bootstrap";
 import ArtistDetails from "./components/ArtistDetails";
 import AlbumDetails from "./components/AlbumDetails";
-import Likes from "./components/Likes"
+import Likes from "./components/Likes";
 
 class App extends React.Component {
   state = {
-    currentSong: {
-      albumCover: null,
-      artistName: null,
-      songName: null,
-    },
+    // currentSong: {
+    //   albumCover: null,
+    //   artistName: null,
+    //   songName: null,
+    // },
     searchString: "",
   };
 
@@ -39,42 +39,16 @@ class App extends React.Component {
             <Route
               path="/artistDetails/:id"
               exact
-              render={(props) => (
-                <ArtistDetails
-                  {...props}
-                  currentSong={(currCover, currArtist, currSong) => {
-                    this.setState({
-                      currentSong: {
-                        albumCover: currCover,
-                        artistName: currArtist,
-                        songName: currSong,
-                      },
-                    });
-                  }}
-                />
-              )}
+              render={(props) => <ArtistDetails {...props} />}
             />
-            <Route path= "/favorites" exact component = {Likes}/>
+            <Route path="/favorites" exact component={Likes} />
             <Route
               path="/albumDetails/:id"
               exact
-              render={(props) => (
-                <AlbumDetails
-                  {...props}
-                  currentSong={(currCover, currArtist, currSong) => {
-                    this.setState({
-                      currentSong: {
-                        albumCover: currCover,
-                        artistName: currArtist,
-                        songName: currSong,
-                      },
-                    });
-                  }}
-                />
-              )}
+              render={(props) => <AlbumDetails {...props} />}
             />
           </Row>
-          <PlayBar currentSong={this.state.currentSong} />
+          <PlayBar />
         </Router>
       </div>
     );
