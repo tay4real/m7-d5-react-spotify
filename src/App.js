@@ -8,15 +8,19 @@ import PlayBar from "./components/PlayBar";
 import { Row } from "react-bootstrap";
 import ArtistDetails from "./components/ArtistDetails";
 import AlbumDetails from "./components/AlbumDetails";
+
 import Login from "./components/Login";
+
+import Likes from "./components/Likes";
+
 
 class App extends React.Component {
   state = {
-    currentSong: {
-      albumCover: null,
-      artistName: null,
-      songName: null,
-    },
+    // currentSong: {
+    //   albumCover: null,
+    //   artistName: null,
+    //   songName: null,
+    // },
     searchString: "",
     loggedin: false,
   };
@@ -30,6 +34,7 @@ class App extends React.Component {
               path="/"
               exact
               render={(props) => (
+
                 <Login
                   {...props}
                   loggedin={() => this.setState({ loggedin: true })}
@@ -93,6 +98,7 @@ class App extends React.Component {
               <PlayBar currentSong={this.state.currentSong} />
             </>
           )}
+
         </Router>
       </div>
     );

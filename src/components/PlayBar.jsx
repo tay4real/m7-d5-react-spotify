@@ -2,8 +2,12 @@ import React from "react";
 import { Col, Row } from "react-bootstrap";
 import playbackBtn from "./assetss/Playback-repeat-01.png";
 import queenCover from "./assetss/91Ph+uTyyxL._AC_SL1500_.jpg";
+import { connect } from "react-redux";
+
+const mapStateToProps = (state) => state;
 
 function PlayBar(props) {
+  const currentSong = props.album.currentSong;
   return (
     <>
       <div
@@ -29,8 +33,8 @@ function PlayBar(props) {
           <Col xs={3}>
             <img
               src={
-                props.currentSong.albumCover !== null
-                  ? props.currentSong.albumCover
+                currentSong.albumCover !== null
+                  ? currentSong.albumCover
                   : queenCover
               }
               style={{ height: "12vh", bottom: 0 }}
@@ -52,8 +56,8 @@ function PlayBar(props) {
                 fontSize: "15pt",
               }}
             >
-              {props.currentSong.songName !== null
-                ? props.currentSong.songName
+              {currentSong.songName !== null
+                ? currentSong.songName
                 : "Bohemian Rhapsody"}
             </div>
             <div
@@ -65,8 +69,8 @@ function PlayBar(props) {
                 fontSize: "15pt",
               }}
             >
-              {props.currentSong.artistName !== null
-                ? props.currentSong.artistName
+              {currentSong.artistName !== null
+                ? currentSong.artistName
                 : "Queen"}
             </div>
           </Col>
@@ -169,8 +173,8 @@ function PlayBar(props) {
             <Col>
               <img
                 src={
-                  props.currentSong.albumCover !== null
-                    ? props.currentSong.albumCover
+                  currentSong.albumCover !== null
+                    ? currentSong.albumCover
                     : queenCover
                 }
                 style={{ position: "absolute", left: "10px", width: "8.5vh" }}
@@ -188,8 +192,8 @@ function PlayBar(props) {
                   textOverflow: "ellipsis",
                 }}
               >
-                {props.currentSong.songName !== null
-                  ? props.currentSong.songName
+                {currentSong.songName !== null
+                  ? currentSong.songName
                   : "Bohemian Rhapsody"}
               </div>
               <div
@@ -201,8 +205,8 @@ function PlayBar(props) {
                   fontSize: " 10pt",
                 }}
               >
-                {props.currentSong.artistName !== null
-                  ? props.currentSong.artistName
+                {currentSong.artistName !== null
+                  ? currentSong.artistName
                   : "Queen"}
               </div>
             </Col>
@@ -380,4 +384,4 @@ function PlayBar(props) {
   );
 }
 
-export default PlayBar;
+export default connect(mapStateToProps)(PlayBar);

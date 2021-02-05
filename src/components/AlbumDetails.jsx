@@ -7,7 +7,7 @@ import { connect } from "react-redux";
 const mapStateToProps = (state) => state;
 
 const mapDispatchToProps = (dispatch) => ({
-  addAlbumWithThunk: (id) =>
+  addAlbumWithThunk: (id) => {
     dispatch(async (dispatch, getState) => {
       try {
         let response = await fetch(
@@ -37,7 +37,26 @@ const mapDispatchToProps = (dispatch) => ({
       } catch (error) {
         console.log(error);
       }
-    }),
+    });
+  },
+  addLike: (song) => {
+    dispatch({
+      type: "ADD_LIKE",
+      payload: song,
+    });
+  },
+  removeLike: (song) => {
+    dispatch({
+      type: "REMOVE_LIKE",
+      payload: song,
+    });
+  },
+  currentSong: (song) => {
+    dispatch({
+      type: "GET_SONG",
+      payload: song,
+    });
+  },
 });
 
 class AlbumDetails extends React.Component {
@@ -55,7 +74,6 @@ class AlbumDetails extends React.Component {
 
     const tracks = this.props.album.tracks;
 
-    console.log(tracks);
     return (
       <>
         <Col
@@ -131,6 +149,9 @@ class AlbumDetails extends React.Component {
                       <th scope="col">
                         <i className="fas fa-play"></i>
                       </th>
+                      <th scope="col">
+                        <i className="fas fa-heart"></i>
+                      </th>
                     </tr>
                   </thead>
 
@@ -166,13 +187,34 @@ class AlbumDetails extends React.Component {
                           <i
                             className="fas fa-play"
                             onClick={() =>
-                              this.props.currentSong(
-                                album.cover_medium,
-                                album.artist.name,
-                                tracks.title
-                              )
+                              this.props.currentSong({
+                                albumCover: album.cover_medium,
+                                artistName: album.artist.name,
+                                songName: tracks.title,
+                              })
                             }
                           ></i>
+                        </td>
+                        <td>
+                          {this.props.likes.find(
+                            (song) => song.tracks.id === tracks.id
+                          ) ? (
+                            <i
+                              className="fas fa-heart"
+                              onClick={() => this.props.removeLike(tracks)}
+                            ></i>
+                          ) : (
+                            <i
+                              className="far fa-heart"
+                              onClick={() =>
+                                this.props.addLike({
+                                  id: tracks.id,
+                                  tracks: tracks,
+                                  cover: album.cover_xl,
+                                })
+                              }
+                            ></i>
+                          )}
                         </td>
                       </tr>
                     ))}

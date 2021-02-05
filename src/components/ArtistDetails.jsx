@@ -11,6 +11,70 @@ import {
 } from "react-bootstrap";
 import AddComment from "./AddComment";
 import CommentList from "./CommentList";
+import { connect } from "react-redux";
+
+const mapStateToProps = (state) => state;
+
+const mapDispatchToProps = (dispatch) => ({
+  currentSong: (song) => {
+    dispatch({
+      type: "GET_SONG",
+      payload: song,
+    });
+  },
+  getTheArtist: (url, sortTrack, setState) => {
+    dispatch(async (dispatch) => {
+      try {
+        const response = await fetch(url, {
+          headers: {
+            "x-rapidapi-key":
+              "dc976bef57mshfe1863c26e99ba2p1cc559jsn861f89a53ff3",
+            "x-rapidapi-host": "deezerdevs-deezer.p.rapidapi.com",
+          },
+        });
+        const data = await response.json();
+        if (response.ok) {
+          dispatch({ type: "GET_ARTIST", payload: data });
+          let secondurl =
+            "https://deezerdevs-deezer.p.rapidapi.com/search?q=" + data.name;
+          const response = await fetch(secondurl, {
+            headers: {
+              "x-rapidapi-key":
+                "dc976bef57mshfe1863c26e99ba2p1cc559jsn861f89a53ff3",
+              "x-rapidapi-host": "deezerdevs-deezer.p.rapidapi.com",
+            },
+          });
+          let album = await response.json();
+
+          let map = new Map();
+          for (let element of album.data) {
+            map.set(element.album.id, element);
+          }
+
+          let filteredData = [];
+          map.forEach((value) => {
+            filteredData.push(value);
+          });
+          let tracks = [...filteredData];
+          if (response.ok) {
+            sortTrack(tracks);
+            dispatch({
+              type: "GET_ARTIST_ALBUMS",
+              payload: filteredData,
+            });
+            dispatch({
+              type: "GET_ARTIST_TRACKS",
+              payload: tracks.slice(0, 3),
+            });
+            setState();
+          }
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    });
+  },
+});
 
 class ArtistDetails extends React.Component {
   state = {
@@ -23,32 +87,14 @@ class ArtistDetails extends React.Component {
     editComment: { comment: {}, editCounter: 0 },
   };
 
-  fetchArtist = async () => {
-    try {
-      let artistResponse = await fetch(
-        "https://deezerdevs-deezer.p.rapidapi.com/artist/" +
-          this.props.match.params.id,
-        {
-          method: "GET",
-          headers: {
-            "x-rapidapi-key":
-              "dc976bef57mshfe1863c26e99ba2p1cc559jsn861f89a53ff3",
-            "x-rapidapi-host": "deezerdevs-deezer.p.rapidapi.com",
-          },
-        }
-      );
+  fetchArtist = () => {
+    let artistUrl =
+      "https://deezerdevs-deezer.p.rapidapi.com/artist/" +
+      this.props.match.params.id;
 
-      let artist = await artistResponse.json();
-
-      if (artistResponse.ok) {
-        this.setState({ artist: artist });
-        this.fetchArtistDetails(artist.name);
-      } else {
-        <Alert variant="danger">Something went wrong!</Alert>;
-      }
-    } catch (error) {
-      console.log(error);
-    }
+    this.props.getTheArtist(artistUrl, this.sortTrack, () => {
+      this.setState({ loading: false });
+    });
   };
 
   sortTrack = (track) => {
@@ -123,6 +169,9 @@ class ArtistDetails extends React.Component {
   };
 
   render() {
+    const artist = this.props.artistDetail.artist;
+    const album = this.props.artistDetail.albums;
+    const tracks = this.props.artistDetail.tracks;
     return (
       <>
         {this.state.loading ? (
@@ -145,7 +194,7 @@ class ArtistDetails extends React.Component {
             <Jumbotron
               fluid
               style={{
-                backgroundImage: `url(${this.state.artist.picture_xl})`,
+                backgroundImage: `url(${artist.picture_xl})`,
                 backgroundSize: "cover",
                 backgroundRepeat: "no-repeat",
                 backgroundAttachment: "fixed",
@@ -166,13 +215,13 @@ class ArtistDetails extends React.Component {
                     className="mt-5 text-light"
                     style={{ fontWeight: "bold", fontSize: "4rem" }}
                   >
-                    {this.state.artist.name}
+                    {artist.name}
                   </h1>
                   <h6 className="text-primary" style={{ fontSize: "1.8rem" }}>
-                    {this.state.artist.nb_fan} listeners
+                    {artist.nb_fan} listeners
                   </h6>
                   <h6 className="text-warning" style={{ fontSize: "1.8rem" }}>
-                    {this.state.artist.nb_album} albums
+                    {artist.nb_album} albums
                   </h6>
                 </div>
               </Container>
@@ -199,17 +248,17 @@ class ArtistDetails extends React.Component {
                         </tr>
                       </thead>
                       <tbody>
-                        {this.state.tracks.map((track, index) => (
+                        {tracks.map((track, index) => (
                           <tr key={index}>
                             <td>
                               <i
                                 className="fas fa-play"
                                 onClick={() =>
-                                  this.props.currentSong(
-                                    track.album.cover_big,
-                                    track.artist.name,
-                                    track.title
-                                  )
+                                  this.props.currentSong({
+                                    albumCover: track.album.cover_big,
+                                    artistName: track.artist.name,
+                                    songName: track.title,
+                                  })
                                 }
                               ></i>
                             </td>
@@ -249,14 +298,14 @@ class ArtistDetails extends React.Component {
                     }}
                     onClick={() => {
                       this.props.history.push(
-                        this.seletedAlbum(this.state.album[1].album.id)
+                        this.seletedAlbum(album[1].album.id)
                       );
                     }}
                   >
                     <Row className=" no-gutters">
                       <Col xs={4}>
                         <img
-                          src={this.state.album[1].album.cover_xl}
+                          src={album[1].album.cover_xl}
                           className="card-img"
                           alt="..."
                         />
@@ -268,9 +317,9 @@ class ArtistDetails extends React.Component {
                               className="d-inline-block text-truncate text-light"
                               style={{ maxWidth: "100%" }}
                             >
-                              <strong>{this.state.album[1].artist.name}</strong>
+                              <strong>{album[1].artist.name}</strong>
                               <br />
-                              {this.state.album[1].album.title}- Album
+                              {album[1].album.title}- Album
                             </span>
                           </div>
                         </div>
@@ -283,7 +332,7 @@ class ArtistDetails extends React.Component {
             <Container fluid className="mt-5">
               <h2 className="text-light">Most Popular Albums</h2>
               <Row className="mt-3">
-                {this.state.album.map((album) => (
+                {album.map((album) => (
                   <Col
                     xs={6}
                     md={3}
@@ -373,4 +422,4 @@ class ArtistDetails extends React.Component {
   }
 }
 
-export default ArtistDetails;
+export default connect(mapStateToProps, mapDispatchToProps)(ArtistDetails);
