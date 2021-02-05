@@ -1,5 +1,23 @@
 import React from "react";
 import { Col, Row, Alert, Spinner } from "react-bootstrap";
+import { connect } from "react-redux";
+
+const mapStateToProps = (state) => state;
+
+const mapDispatchToProps = (dispatch) => ({
+  addLike: (song) => {
+    dispatch({
+      type: "ADD_LIKE",
+      payload: song,
+    });
+  },
+  removeLike: (song) => {
+    dispatch({
+      type: "REMOVE_LIKE",
+      payload: song,
+    });
+  },
+});
 
 class Search extends React.Component {
   state = {
@@ -102,4 +120,4 @@ class Search extends React.Component {
   }
 }
 
-export default Search;
+export default connect(mapStateToProps, mapDispatchToProps)(Search);

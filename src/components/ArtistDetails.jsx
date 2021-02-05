@@ -11,6 +11,56 @@ import {
 } from "react-bootstrap";
 import AddComment from "./AddComment";
 import CommentList from "./CommentList";
+import { connect } from "react-redux";
+
+const mapStateToProps = (state) => state;
+
+const mapDispatchToProps = (dispatch) => ({
+  /*  addArtistWithThunk: (id) => {
+    dispatch(async (dispatch, getState) => {
+      try {
+        let artistResponse = await fetch(
+          "https://deezerdevs-deezer.p.rapidapi.com/artist/" +
+            this.props.match.params.id,
+          {
+            method: "GET",
+            headers: {
+              "x-rapidapi-key":
+                "dc976bef57mshfe1863c26e99ba2p1cc559jsn861f89a53ff3",
+              "x-rapidapi-host": "deezerdevs-deezer.p.rapidapi.com",
+            },
+          }
+        );
+
+        let artist = await artistResponse.json();
+
+        if (artistResponse.ok) {
+          dispatch({
+            type:"GET_ARTISTS"
+          })
+        } else {
+          <Alert variant="danger">Something went wrong!</Alert>;
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    });
+  },
+ */
+
+  addLike: (song) => {
+    dispatch({
+      type: "ADD_LIKE",
+      payload: song,
+    });
+  },
+  removeLike: (song) => {
+    dispatch({
+      type: "REMOVE_LIKE",
+      payload: song,
+    });
+  },
+});
 
 class ArtistDetails extends React.Component {
   state = {
@@ -196,6 +246,9 @@ class ArtistDetails extends React.Component {
                           <th scope="col">
                             <i className="far fa-clock"></i>
                           </th>
+                          <th scope="col">
+                            <i className="fas fa-heart"></i>
+                          </th>
                         </tr>
                       </thead>
                       <tbody>
@@ -224,13 +277,34 @@ class ArtistDetails extends React.Component {
                             >
                               {track.album.title}
                             </td>
-
                             <td>
                               {(track.duration / 60)
                                 .toFixed(2)
                                 .toString()
                                 .replace(".", ":")}
                               min
+                            </td>
+
+                            <td>
+                              {this.props.likes.find(
+                                (song) => song.id === track.id
+                              ) ? (
+                                <i
+                                  className="fas fa-heart"
+                                  onClick={() => this.props.removeLike(track)}
+                                ></i>
+                              ) : (
+                                <i
+                                  className="far fa-heart"
+                                  onClick={() =>
+                                    this.props.addLike({
+                                      cover: track.album.cover_big,
+                                      tracks: track,
+                                      id: track.id,
+                                    })
+                                  }
+                                ></i>
+                              )}
                             </td>
                           </tr>
                         ))}
@@ -373,4 +447,4 @@ class ArtistDetails extends React.Component {
   }
 }
 
-export default ArtistDetails;
+export default connect(mapStateToProps, mapDispatchToProps)(ArtistDetails);
