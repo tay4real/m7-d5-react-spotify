@@ -12,7 +12,8 @@ const initialState = {
   artists: [],
   album: {
     currentSong: {},
-    albums: [],
+    albums: {},
+    tracks: [],
   },
 
   user: {
