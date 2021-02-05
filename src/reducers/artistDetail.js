@@ -1,21 +1,20 @@
 export default function (state = {}, action) {
   switch (action.type) {
-    case "ADD_ALBUM":
+    case "GET_ARTIST":
       return {
         ...state,
-        albums: { ...action.payload },
+        artist: { ...action.payload },
       };
-    case "ADD_TRACKS":
+    case "GET_ARTIST_ALBUMS":
+      return {
+        ...state,
+        albums: [...action.payload],
+      };
+    case "GET_ARTIST_TRACKS":
       return {
         ...state,
         tracks: [...action.payload],
       };
-    case "GET_SONG":
-      return {
-        ...state,
-        currentSong: { ...action.payload },
-      };
-
     default:
       return state;
   }
