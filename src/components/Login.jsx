@@ -110,7 +110,10 @@ class Login extends React.Component {
                 <button
                   type="button"
                   className="btn loginButton bg-primary w-100 rounded-pill mb-5"
-                  onClick={() => this.props.loggedin()}
+                  onClick={() => {
+                    this.props.loggedin();
+                    this.props.history.push("/home");
+                  }}
                 >
                   LOG IN
                 </button>
