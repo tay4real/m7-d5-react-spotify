@@ -8,6 +8,7 @@ import PlayBar from "./components/PlayBar";
 import { Row } from "react-bootstrap";
 import ArtistDetails from "./components/ArtistDetails";
 import AlbumDetails from "./components/AlbumDetails";
+import Login from "./components/Login";
 
 class App extends React.Component {
   state = {
@@ -28,6 +29,7 @@ class App extends React.Component {
               searchString={(string) => this.setState({ searchString: string })}
               searchStr={this.state.searchString}
             />
+            <Route path="/login" exact component={Login} />
             <Route
               path="/"
               exact

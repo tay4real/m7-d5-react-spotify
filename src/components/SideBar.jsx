@@ -15,6 +15,7 @@ class SideBar extends React.Component {
       this.setState({ searchString: e.currentTarget.value });
     }
   };
+  
   render() {
     return (
       <>
