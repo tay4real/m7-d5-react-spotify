@@ -9,74 +9,80 @@ import { Row } from "react-bootstrap";
 import ArtistDetails from "./components/ArtistDetails";
 import AlbumDetails from "./components/AlbumDetails";
 
+import Signup from "./components/Signup";
+import Login from "./components/Login";
+
+import Likes from "./components/Likes";
+import { connect } from "react-redux";
+
+const mapStateToProps = (state) => state;
+
 class App extends React.Component {
   state = {
-    currentSong: {
-      albumCover: null,
-      artistName: null,
-      songName: null,
-    },
+    // currentSong: {
+    //   albumCover: null,
+    //   artistName: null,
+    //   songName: null,
+    // },
     searchString: "",
+    loggedin: false,
   };
 
   render() {
     return (
       <div className="App">
         <Router>
-          <Row>
-            <SideBar
-              searchString={(string) => this.setState({ searchString: string })}
-              searchStr={this.state.searchString}
-            />
-            <Route
-              path="/"
-              exact
-              render={(props) => (
-                <Home {...props} searchString={this.state.searchString} />
-              )}
-            />
-            <Route
-              path="/artistDetails/:id"
-              exact
-              render={(props) => (
-                <ArtistDetails
-                  {...props}
-                  currentSong={(currCover, currArtist, currSong) => {
-                    this.setState({
-                      currentSong: {
-                        albumCover: currCover,
-                        artistName: currArtist,
-                        songName: currSong,
-                      },
-                    });
-                  }}
+          {!this.props.user.loggedin ? (
+            <>
+              <Route
+                path="/"
+                exact
+                render={(props) => (
+                  <Login
+                    {...props}
+                    loggedin={() => this.setState({ loggedin: true })}
+                  />
+                )}
+              />
+              <Route path="/signup" exact component={Signup} />
+            </>
+          ) : (
+            <>
+              <Row>
+                <SideBar
+                  searchString={(string) =>
+                    this.setState({ searchString: string })
+                  }
+                  searchStr={this.state.searchString}
                 />
-              )}
-            />
-            <Route
-              path="/albumDetails/:id"
-              exact
-              render={(props) => (
-                <AlbumDetails
-                  {...props}
-                  currentSong={(currCover, currArtist, currSong) => {
-                    this.setState({
-                      currentSong: {
-                        albumCover: currCover,
-                        artistName: currArtist,
-                        songName: currSong,
-                      },
-                    });
-                  }}
+
+                <Route
+                  path="/home"
+                  exact
+                  render={(props) => (
+                    <Home {...props} searchString={this.state.searchString} />
+                  )}
                 />
-              )}
-            />
-          </Row>
-          <PlayBar currentSong={this.state.currentSong} />
+
+                <Route path="/favorites" exact component={Likes} />
+                <Route
+                  path="/artistDetails/:id"
+                  exact
+                  render={(props) => <ArtistDetails {...props} />}
+                />
+                <Route
+                  path="/albumDetails/:id"
+                  exact
+                  render={(props) => <AlbumDetails {...props} />}
+                />
+              </Row>
+              <PlayBar />
+            </>
+          )}
         </Router>
       </div>
     );
   }
 }
 
-export default App;
+export default connect(mapStateToProps)(App);

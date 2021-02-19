@@ -2,6 +2,14 @@ import React from "react";
 import logo from "./assetss/spologo.png";
 import { Link, withRouter } from "react-router-dom";
 import { Col, InputGroup, FormControl } from "react-bootstrap";
+import { connect } from "react-redux";
+
+const mapStateToProps = (state) => state;
+
+const mapDispatchToProps = (dispatch) => ({
+  setLoggedOut: (loggedOut) =>
+    dispatch({ type: "SET_LOGOUT", payload: loggedOut }),
+});
 
 class SideBar extends React.Component {
   state = {
@@ -15,6 +23,7 @@ class SideBar extends React.Component {
       this.setState({ searchString: e.currentTarget.value });
     }
   };
+
   render() {
     return (
       <>
@@ -32,13 +41,13 @@ class SideBar extends React.Component {
             <img className="ml-4" src={logo} alt="Spotify" width="55%" />
           </div>
           <div className="d-flex flex-column">
-            <Link className="pl-4 mb-2 linkBorder" to="/">
+            <Link className="pl-4 mb-2 linkBorder" to="/home">
               <span className="spotify-text-primary spotify-text-secondary d-flex flex-row pt-1">
                 <i className="fas fa-home mr-3"></i>
                 <h6>Home</h6>
               </span>
             </Link>
-            <Link className="pl-4 mb-2" to="/">
+            <Link className="pl-4 mb-2" to="/home">
               <span className="spotify-text-primary d-flex flex-row pt-1">
                 <i className="fas fa-search mr-3"></i>
                 <h6>Search</h6>
@@ -55,23 +64,24 @@ class SideBar extends React.Component {
                 />
               </span>
             </Link>
-            <a className="pl-4 mb-2" href="artist.html">
+            <Link className="pl-4 mb-2" to="/favorites">
               <span className="spotify-text-primary d-flex flex-row pt-1">
                 <i className="fas fa-swatchbook mr-3"></i>
-                <h6>Your Library</h6>
+                <h6>Your Likes</h6>
               </span>
-            </a>
+            </Link>
           </div>
           <div className="myLibrary border-top border-secondary ml-4">
             <ul className="pl-0"></ul>
           </div>
-          <div className="mb-3 px-4">
+          <div className="mb-5 px-4 ">
             <a className="spotify-text-primary" href="#">
               <span className="d-flex flex-row border-bottom border-secondary mr-4 pb-2">
                 <i className="far fa-arrow-alt-circle-down fa-2x mr-3"></i>
                 <h6 className="pt-1">Install App</h6>
               </span>
             </a>
+
             <span className="d-flex flex-row">
               <img
                 className="rounded-circle mt-2"
@@ -79,14 +89,26 @@ class SideBar extends React.Component {
                 width="35px"
                 height="35px"
               />
-              <h6 className="ml-3 pt-3 spotify-text-secondary">
-                Strive Student
+              <h6 className="ml-2 mr-2 pt-3 spotify-text-secondary">
+                {this.props.user.username}
               </h6>
+              <span className="pt-2">
+                <button
+                  class="btn login-btn btn-danger m-0"
+                  type="button"
+                  onClick={() => {
+                    this.props.setLoggedOut(false);
+                    this.props.history.push("/");
+                  }}
+                >
+                  Logout
+                </button>
+              </span>
             </span>
           </div>
         </Col>
         <div className="spotify-bg-sidebar2 d-flex d-md-none justify-content-around w-100 ml-0">
-          <Link className="pl-4 mb-2" to="/">
+          <Link className="pl-4 mb-2" to="/home">
             <div className="spotify-text-primary d-flex align-items-center justify-content-center flex-column pt-1">
               <i className="fas fa-home fa-2x mt-3 mb-1"></i>
               <h6>Home</h6>
@@ -98,16 +120,18 @@ class SideBar extends React.Component {
               <h6>Search</h6>
             </div>
           </a>
-          <a className="pl-4 mb-2" href="artist.html">
+          <Link className="pl-4 mb-2" to="/favorites">
             <div className="spotify-text-primary d-flex align-items-center justify-content-center flex-column pt-1">
               <i className="fas fa-swatchbook fa-2x mt-3 mb-1"></i>
-              <h6>Your Library</h6>
+              <h6>Your Likes</h6>
             </div>
-          </a>
+          </Link>
         </div>
       </>
     );
   }
 }
 
-export default withRouter(SideBar);
+export default withRouter(
+  connect(mapStateToProps, mapDispatchToProps)(SideBar)
+);

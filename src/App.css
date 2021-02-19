@@ -476,7 +476,8 @@ table tbody tr:hover {
   transition: 0.7s ease;
 }
 
-tbody i.fa-play:hover {
+tbody i.fa-play:hover,
+tbody i.fa-heart:hover {
   color: var(--spotify_green);
   cursor: pointer;
 }

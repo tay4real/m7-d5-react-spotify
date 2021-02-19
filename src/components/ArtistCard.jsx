@@ -1,40 +1,49 @@
 import React from "react";
 
-import { Col, Alert, Spinner } from "react-bootstrap";
+import { Col, Spinner } from "react-bootstrap";
+import { connect } from "react-redux";
 
-class ArtistCard extends React.Component {
-  state = {
-    artist: {},
-    loading: true,
-  };
-  fetchArtist = async () => {
-    this.setState({ loading: true });
-    try {
-      let response = await fetch(
-        "https://deezerdevs-deezer.p.rapidapi.com/artist/" + this.props.id,
-        {
-          method: "GET",
+const mapStateToProps = (state) => state;
+
+const mapDispatchToProps = (dispatch) => ({
+  getArtist: (url, setState) => {
+    dispatch(async (dispatch) => {
+      try {
+        const response = await fetch(url, {
           headers: {
             "x-rapidapi-key":
               "dc976bef57mshfe1863c26e99ba2p1cc559jsn861f89a53ff3",
             "x-rapidapi-host": "deezerdevs-deezer.p.rapidapi.com",
           },
+        });
+        const data = await response.json();
+
+        if (response.ok) {
+          dispatch({
+            type: "GET_ARTISTS",
+            payload: data,
+          });
+          setState();
         }
-      );
-
-      let artist = await response.json();
-
-      if (response.ok) {
-        setTimeout(() => {
-          this.setState({ artist: artist, loading: false });
-        }, 2000);
-      } else {
-        <Alert variant="danger">Something went wrong!</Alert>;
-        this.setState({ loading: false });
+      } catch (error) {
+        console.log(error);
       }
-    } catch (error) {
-      console.log(error);
-    }
+    });
+  },
+});
+
+class ArtistCard extends React.Component {
+  state = {
+    loading: true,
+  };
+  fetchArtist = async () => {
+    this.setState({ loading: true });
+
+    let url =
+      "https://deezerdevs-deezer.p.rapidapi.com/artist/" + this.props.id;
+    await this.props.getArtist(url, () => {
+      this.setState({ loading: false });
+    });
   };
 
   selectArtist = () => {
@@ -46,6 +55,11 @@ class ArtistCard extends React.Component {
   };
 
   render() {
+    const artist = {
+      ...this.props.artists.find(
+        (artist) => artist.id === parseInt(this.props.id)
+      ),
+    };
     return (
       <>
         <Col xs={6} md={3} lg={2} className="covers mb-2">
@@ -56,8 +70,8 @@ class ArtistCard extends React.Component {
               <div className="position-relative">
                 <img
                   className="img-fluid"
-                  src={this.state.artist.picture_big}
-                  alt={this.state.artist.name}
+                  src={artist.picture_big}
+                  alt={artist.name}
                 />
                 <div className="playMusic">
                   <i className="far fa-heart fa-2x mx-2 position-relative">
@@ -75,7 +89,7 @@ class ArtistCard extends React.Component {
                 </div>
               </div>
               <p className="text-center spotify-text-secondary mt-2">
-                {this.state.artist.name}
+                {artist.name}
               </p>
             </>
           )}
@@ -85,4 +99,4 @@ class ArtistCard extends React.Component {
   }
 }
 
-export default ArtistCard;
+export default connect(mapStateToProps, mapDispatchToProps)(ArtistCard);
